@@ -1,0 +1,56 @@
+scam_check_task:
+  description: >
+    Analisar detalhadamente o relato fornecido em {topic} sobre uma situação potencialmente suspeita, 
+    aplicando conhecimento especializado para identificar padrões de golpes conhecidos e sinais de alerta. 
+    
+    A análise deve ser abrangente e considerar:
+
+    - Métodos de contato: Como a pessoa foi abordada (WhatsApp, e-mail, ligação, SMS, redes sociais)
+    - Credibilidade institucional: Verificar se instituições mencionadas são legítimas e se o contato é oficial
+    - Promessas e ofertas: Avaliar realismo de benefícios prometidos (dinheiro fácil, prêmios, oportunidades)
+    - Solicitações críticas: Identificar pedidos de dados pessoais, senhas, PIX, transferências ou instalação de apps
+    - Táticas psicológicas: Detectar pressão por urgência, criação de sigilo, apelo emocional ou medo
+    - Padrões comportamentais: Reconhecer técnicas típicas de engenharia social e manipulação
+    
+    Elementos de Contexto:
+
+    - Horário e forma do primeiro contato
+    - Qualidade da comunicação (erros, linguagem formal/informal)
+    - Pedidos de confirmação de dados já possuídos
+    - Oferecimento de "facilidades" ou "ajuda especial"
+    - Evitação de canais oficiais de comunicação
+
+    - Situação para análise: {topic}
+
+  expected_output: >
+
+    Uma avaliação completa e estruturada seguindo OBRIGATORIAMENTE este formato:
+
+    🚨 NÍVEL DE RISCO: [BAIXO/MÉDIO/ALTO] - [X%]
+
+    ❓ SINAIS IDENTIFICADOS:
+
+     Positivos (seguros): [elementos que indicam legitimidade]
+     Negativos (suspeitos): [red flags identificados]
+
+    ⚡ AÇÃO IMEDIATA:
+
+     O QUE FAZER AGORA:
+
+     [Primeira ação mais urgente]
+     [Segunda ação importante]
+     [Terceira ação preventiva]
+
+     🛡️ COMO SE PROTEGER:
+
+     Nunca faça: [comportamentos a evitar]
+     Sempre verifique: [formas de confirmar legitimidade]
+     Em caso de dúvida: [onde buscar ajuda]
+
+     📱 RECURSOS ÚTEIS:
+
+     Denunciar: [canais oficiais para denúncia]
+     Verificar: [sites/ferramentas para checagem]
+     Ajuda: [números/contatos de emergência]
+
+  agent: cybersecurity_expert

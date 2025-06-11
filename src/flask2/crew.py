@@ -5,10 +5,16 @@ from crewai.project import CrewBase, agent, crew, task
 class CybersecurityProject():
     """Cybersecurity and Content Creation crew"""
 
+
+    def __init__(self, llm=None):
+        self.llm = llm  # Recebe o LLM configurado
+
+
     @agent
     def cybersecurity_expert(self) -> Agent:
         return Agent(
-            config=self.agents_config['cybersecurity_expert'],
+            config=self.agents_config['cybersecurity_expert'], 
+            llm=self.llm,
             verbose=True
         )
 
@@ -22,7 +28,7 @@ class CybersecurityProject():
     @crew
     def crew(self) -> Crew:
         """Creates the Cybersecurity Project crew"""
-        return Crew(
+        return Crew(  
             agents=[self.cybersecurity_expert()],
             tasks=[self.scam_check_task()],
             process=Process.sequential,

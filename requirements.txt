@@ -1,3 +1,4 @@
 flask
 crewai
 flask_cors
+pyngrok

@@ -4,12 +4,10 @@ from datetime import datetime
 from crewai import LLM
 from crew import CybersecurityProject
 import os
-import signal
 from flask import Flask, jsonify, request
 from flask_cors import CORS
-from pyngrok import ngrok, conf
 import socket
-import time
+
 
 app = Flask(__name__)
 CORS(app)
@@ -67,46 +65,14 @@ def is_port_in_use(port):
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         return s.connect_ex(('localhost', port)) == 0
 
-def start_ngrok():
-    """Inicia o túnel do ngrok"""
-    try:
-        conf.get_default().auth_token = "2yPVGVqqzKuw7ix1b06J6ttR8GT_2FAoFo8pFgYmQP48n5ea"
-        tunnel = ngrok.connect(5000, "http")
-        print(f"URL pública do ngrok: {tunnel.public_url}")
-        return tunnel
-    except Exception as e:
-        print(f"Erro ao iniciar o ngrok: {e}")
-        sys.exit(1)
-
-def signal_handler(sig, frame):
-    """Lida com a interrupção do programa"""
-    try:
-        tunnels = ngrok.get_tunnels()
-        if tunnels:
-            ngrok.disconnect(tunnels[0].public_url)
-            print("Túnel do ngrok encerrado.")
-        print("Flask e ngrok encerrados.")
-        sys.exit(0)
-    except Exception as e:
-        print(f"Erro ao encerrar: {e}")
-        sys.exit(1)
-
 if __name__ == "__main__":
-    # Verificar se a porta 5000 está em uso
+
     if is_port_in_use(5000):
         print("Erro: A porta 5000 já está em uso. Encerrando processos existentes ou escolha outra porta.")
         sys.exit(1)
 
-    # Iniciar o ngrok
-    tunnel = start_ngrok()
-
-    # Capturar Ctrl+C para encerrar graceful
-    signal.signal(signal.SIGINT, signal_handler)
-
-    # Iniciar o Flask
     try:
         print("Iniciando servidor Flask...")
-        app.run(host='0.0.0.0', port=5000, debug=False)  # debug=False para evitar reinicializações
+        app.run(host='0.0.0.0', port=5000, debug=False)  
     except Exception as e:
         print(f"Erro ao iniciar o Flask: {e}")
-        signal_handler(None, None)  # Encerrar o ngrok se o Flask falhar

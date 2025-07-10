@@ -1,36 +1,45 @@
-from crewai import Agent, Crew, Process, Task
-from crewai.project import CrewBase, agent, crew, task
+from crewai import Agent, Crew, Process, Task, LLM
+from crewai.project import CrewBase, agent, crew, task, llm
+from crewai.agents.agent_builder.base_agent import BaseAgent
+from typing import List
+
 
 @CrewBase
-class CybersecurityProject():
-    """Cybersecurity and Content Creation crew"""
+class AgenteGerenciador():
+    """AgenteGerenciador crew"""
 
+    agents: List[BaseAgent]
+    tasks: List[Task]
 
-    def __init__(self, llm=None):
-        self.llm = llm  # Recebe o LLM configurado
-
+    @llm
+    def groq_llm(self):
+        return LLM(
+            model="groq/gemma2-9b-it",
+            api_key="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"
+        )
 
     @agent
-    def cybersecurity_expert(self) -> Agent:
+    def planning_interpreter(self) -> Agent:
         return Agent(
-            config=self.agents_config['cybersecurity_expert'], 
-            llm=self.llm,
-            verbose=True
+            config=self.agents_config['planning_interpreter'], 
+            verbose=True,
+            llm=self.groq_llm()
         )
 
     @task
-    def scam_check_task(self) -> Task:
+    def planning_interpreter_task(self) -> Task:
         return Task(
-            config=self.tasks_config['scam_check_task'],
-            agent=self.cybersecurity_expert()
+            config=self.tasks_config['planning_interpreter_task'],
         )
 
     @crew
     def crew(self) -> Crew:
-        """Creates the Cybersecurity Project crew"""
-        return Crew(  
-            agents=[self.cybersecurity_expert()],
-            tasks=[self.scam_check_task()],
+        """Creates the AgenteGerenciador crew"""
+        
+        return Crew(
+            agents=self.agents, 
+            tasks=self.tasks,
             process=Process.sequential,
             verbose=True,
+            manager_llm=self.groq_llm()
         )

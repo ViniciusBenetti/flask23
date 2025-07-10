@@ -1,64 +1,42 @@
-scam_check_task:
+planning_interpreter_task:
   description: >
-    Analisar detalhadamente o relato fornecido em {topic} sobre uma situação potencialmente suspeita, 
-    aplicando conhecimento especializado para identificar padrões de golpes conhecidos e sinais de alerta. 
-    
-    A análise deve ser abrangente e considerar:
+    The user provides a description of their routine in the `user_planning_text` field.
+    Your job is to extract all identifiable events, and for each one:
 
-    - Métodos de contato: Como a pessoa foi abordada (WhatsApp, e-mail, ligação, SMS, redes sociais)
-    - Credibilidade institucional: Verificar se instituições mencionadas são legítimas e se o contato é oficial
-    - Promessas e ofertas: Avaliar realismo de benefícios prometidos (dinheiro fácil, prêmios, oportunidades)
-    - Solicitações críticas: Identificar pedidos de dados pessoais, senhas, PIX, transferências ou instalação de apps
-    - Táticas psicológicas: Detectar pressão por urgência, criação de sigilo, apelo emocional ou medo
-    - Padrões comportamentais: Reconhecer técnicas típicas de engenharia social e manipulação
-    
-    Elementos de Contexto:
-
-    - Horário e forma do primeiro contato
-    - Qualidade da comunicação (erros, linguagem formal/informal)
-    - Pedidos de confirmação de dados já possuídos
-    - Oferecimento de "facilidades" ou "ajuda especial"
-    - Evitação de canais oficiais de comunicação
-
-    - Situação para análise: {topic}
+    - Extract `label`: only the name of the activity (e.g., "acordar", "psicólogo", "jiu-jitsu").
+      Do NOT include time, date, or weekday phrases inside the label.
+    - Extract `frequency`: if the user mentions days of the week or "todos os dias", convert to weekday array.
+      If the user mentions a specific date (e.g., "dia 13 de julho"), use it in ["dd/mm/yyyy"] format.
+    - Extract `time`: if a time is provided, use it. Else, default to "12:00".
+    - Extract `start_date`: if mentioned explicitly (e.g., "a partir de", "starting from"), use it.
+      Otherwise, use today’s date (current system date).
 
   expected_output: >
+    Given this input:
 
-    Uma avaliação completa e estruturada seguindo OBRIGATORIAMENTE este formato e em português(BR):
+    ```json
+    { "user_planning_text": "{user_planning_text}" }
+    ```
 
-    |🚨 NÍVEL DE RISCO: [BAIXO/MÉDIO/ALTO] - [X%]
-     \n
-    ❓ SINAIS IDENTIFICADOS:
-     \n  
-     Positivos: [elementos que indicam legitimidade]
-     \n
-     Negativos: [red flags identificados]
-     \n\n
-    ⚡ AÇÃO IMEDIATA:
-     \n
-     O QUE FAZER AGORA:
-     \n
-     [Primeira ação mais urgente]
-     \n
-     [Segunda ação importante]
-     \n
-     [Terceira ação preventiva]
-     \n\n
-     🛡️ COMO SE PROTEGER:
-     \n
-     Nunca faça: [comportamentos a evitar]
-     \n
-     Sempre verifique: [formas de confirmar legitimidade]
-     \n
-     Em caso de dúvida: [onde buscar ajuda]
-     \n\n
+    Return a JSON array like:
 
-     📱 RECURSOS ÚTEIS:
-     \n
-     Denunciar: [canais oficiais para denúncia]
-     \n
-     Verificar: [sites/ferramentas para checagem]
-     \n
-     Ajuda: [números/contatos de emergência]
+    ```json
+    [
+      {
+        "label": "acordar",
+        "frequency": ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"],
+        "start_date": "09/07/2025",
+        "time": "08:00"
+      },
+      {
+        "label": "psicólogo",
+        "frequency": ["friday"],
+        "start_date": "09/07/2025",,
+        "time": "15:00"
+      }
+    ]
+    ```
 
-  agent: cybersecurity_expert
+    Do NOT repeat date/time/day info inside the label field.
+
+  agent: planning_interpreter

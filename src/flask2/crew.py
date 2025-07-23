@@ -15,7 +15,7 @@ class AgenteGerenciador():
     def groq_llm(self):
         return LLM(
             model="groq/gemma2-9b-it",
-            api_key="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"
+            api_key="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"
         )
 
     @agent
